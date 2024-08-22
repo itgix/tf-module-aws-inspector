@@ -1,12 +1,12 @@
-resource "aws_inspector2_enabler" "itgix_primary" {
-  count          = var.inspector_organization_management_account ? 1 : 0
-  account_ids    = [var.organization_management_account_id]
-  resource_types = var.amazon_inspector_resources_to_scan
-}
-
 resource "aws_inspector2_delegated_admin_account" "delegated_inspector_admin_acc" {
   count      = var.inspector_organization_management_account ? 1 : 0
   account_id = var.organization_security_account_id
+}
+
+resource "aws_inspector2_enabler" "itgix_primary" {
+  count          = var.inspector_organization_security_account ? 1 : 0
+  account_ids    = [var.organization_management_account_id]
+  resource_types = var.amazon_inspector_resources_to_scan
 }
 
 resource "aws_inspector2_organization_configuration" "itgix_primary" {
