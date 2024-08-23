@@ -1,8 +1,8 @@
-variable "organization_management_account_id" {
-  type        = string
-  description = "The account ID of the organization managemnet account"
-  default     = ""
-}
+#variable "organization_management_account_id" {
+#type        = string
+#description = "The account ID of the organization managemnet account"
+#default     = ""
+#}
 
 variable "inspector_organization_management_account" {
   type        = bool
