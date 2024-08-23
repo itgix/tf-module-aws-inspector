@@ -31,7 +31,7 @@ variable "organization_security_account_id" {
 
 variable "amazon_inspector_resources_to_scan" {
   type        = list(any)
-  default     = ["ECR", "EC2"]
+  default     = ["EC2", "ECR"]
   description = "(Required) Type of resources to scan. Valid values are EC2, ECR, LAMBDA and LAMBDA_CODE. At least one item is required."
 }
 
