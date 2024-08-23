@@ -17,8 +17,6 @@ resource "aws_inspector2_organization_configuration" "itgix_primary" {
     lambda      = var.amazon_inspector_auto_enable_lambda_scanning
     lambda_code = var.amazon_inspector_auto_enable_lambda_code_scanning
   }
-
-  depends_on = [aws_inspector2_enabler.delegated_admin_account]
 }
 
 resource "aws_inspector2_member_association" "itgix_primary" {
