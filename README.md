@@ -1,43 +1,47 @@
 The Terraform module is used by the ITGix AWS Landing Zone - https://itgix.com/itgix-landing-zone/
 
-<!-- BEGIN_TF_DOCS -->
-## Requirements
+# AWS Inspector Terraform Module
 
-No requirements.
+This module enables Amazon Inspector v2 across an AWS Organization with delegated admin, member account associations, and configurable scanning types.
 
-## Providers
+Part of the [ITGix AWS Landing Zone](https://itgix.com/itgix-landing-zone/).
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+## Resources Created
 
-## Modules
-
-No modules.
-
-## Resources
-
-| Name | Type |
-|------|------|
-| [aws_inspector2_enabler.member_accounts](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/inspector2_enabler) | resource |
-| [aws_inspector2_member_association.itgix_primary](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/inspector2_member_association) | resource |
-| [aws_inspector2_organization_configuration.itgix_primary](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/inspector2_organization_configuration) | resource |
+- Inspector v2 enabler for specified resource types
+- Delegated administrator configuration
+- Organization member account associations
+- Auto-enable settings for new member accounts
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_amazon_inspector_auto_enable_ec2_scanning"></a> [amazon\_inspector\_auto\_enable\_ec2\_scanning](#input\_amazon\_inspector\_auto\_enable\_ec2\_scanning) | (Required) Whether Amazon EC2 scans are automatically enabled for new members of your Amazon Inspector organization. | `bool` | `true` | no |
-| <a name="input_amazon_inspector_auto_enable_ecr_scanning"></a> [amazon\_inspector\_auto\_enable\_ecr\_scanning](#input\_amazon\_inspector\_auto\_enable\_ecr\_scanning) | (Required) Whether Amazon ECR scans are automatically enabled for new members of your Amazon Inspector organization. | `bool` | `true` | no |
-| <a name="input_amazon_inspector_auto_enable_lambda_code_scanning"></a> [amazon\_inspector\_auto\_enable\_lambda\_code\_scanning](#input\_amazon\_inspector\_auto\_enable\_lambda\_code\_scanning) | (Optional) Whether AWS Lambda code scans are automatically enabled for new members of your Amazon Inspector organization. Note: Lambda code scanning requires Lambda standard scanning to be activated. Consequently, if you are setting this argument to true, you must also set the lambda argument to true | `bool` | `false` | no |
-| <a name="input_amazon_inspector_auto_enable_lambda_scanning"></a> [amazon\_inspector\_auto\_enable\_lambda\_scanning](#input\_amazon\_inspector\_auto\_enable\_lambda\_scanning) | (Optional) Whether Lambda Function scans are automatically enabled for new members of your Amazon Inspector organization. | `bool` | `false` | no |
-| <a name="input_amazon_inspector_resources_to_scan"></a> [amazon\_inspector\_resources\_to\_scan](#input\_amazon\_inspector\_resources\_to\_scan) | (Required) Type of resources to scan. Valid values are EC2, ECR, LAMBDA and LAMBDA\_CODE. At least one item is required. | `list(any)` | <pre>[<br/>  "EC2",<br/>  "ECR"<br/>]</pre> | no |
-| <a name="input_inspector_organization_management_account"></a> [inspector\_organization\_management\_account](#input\_inspector\_organization\_management\_account) | Set to true when running from organization management account to configure the Guardduty delegated admin | `bool` | `false` | no |
-| <a name="input_inspector_organization_security_account"></a> [inspector\_organization\_security\_account](#input\_inspector\_organization\_security\_account) | Set to true when running from organization security account to configure the Guardduty in the organization and invite member accounts | `bool` | `false` | no |
-| <a name="input_organization_member_account_ids"></a> [organization\_member\_account\_ids](#input\_organization\_member\_account\_ids) | List of member account IDs where guarduty will be enabled | `list(any)` | `[]` | no |
-| <a name="input_organization_security_account_id"></a> [organization\_security\_account\_id](#input\_organization\_security\_account\_id) | The account ID of the organization security account | `string` | `""` | no |
+|------|-------------|------|---------|----------|
+| `inspector_organization_management_account` | Set to true when running from organization management account | `bool` | `false` | no |
+| `inspector_organization_security_account` | Set to true when running from organization security account | `bool` | `false` | no |
+| `organization_member_account_ids` | List of member account IDs where Inspector will be enabled | `list(any)` | `[]` | no |
+| `organization_security_account_id` | The account ID of the organization security account | `string` | `""` | no |
+| `amazon_inspector_resources_to_scan` | Type of resources to scan (EC2, ECR, LAMBDA, LAMBDA_CODE) | `list(any)` | `["EC2", "ECR"]` | no |
+| `amazon_inspector_auto_enable_ec2_scanning` | Auto-enable EC2 scans for new members | `bool` | `true` | no |
+| `amazon_inspector_auto_enable_ecr_scanning` | Auto-enable ECR scans for new members | `bool` | `true` | no |
+| `amazon_inspector_auto_enable_lambda_scanning` | Auto-enable Lambda scans for new members | `bool` | `false` | no |
+| `amazon_inspector_auto_enable_lambda_code_scanning` | Auto-enable Lambda code scans for new members | `bool` | `false` | no |
 
-## Outputs
+## Usage Example
 
-No outputs.
-<!-- END_TF_DOCS -->
+```hcl
+module "inspector" {
+  source = "path/to/tf-module-aws-inspector"
+
+  inspector_organization_security_account = true
+  organization_security_account_id        = "111111111111"
+
+  organization_member_account_ids = [
+    "222222222222",
+    "333333333333"
+  ]
+
+  amazon_inspector_resources_to_scan         = ["EC2", "ECR", "LAMBDA"]
+  amazon_inspector_auto_enable_lambda_scanning = true
+}
+```
